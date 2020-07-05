@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# -3 => 
+# int has 32 bits
+# 1111 1111 1111 1111 1111 1111 1111 1101
+
+# the proceeding numbers should be prepended
+# with 0s, up to 32 positions.
+# 4 => 100 => 1
+# 5 => 101 => 2
+# 6 => 110 => 2
+# 7 => 111 => 3
+# 8 => 1000 => 1
+# 9 => 1001 => 2
+# 10 => 1010 => 2
+# 15 => 1111 => 4
+./bitcount 4 | grep 1 && echo "success" || echo "fail"
+./bitcount 6 | grep 2 && echo "success" || echo "fail"
+./bitcount 8 | grep 1 && echo "success" || echo "fail"
+./bitcount 15 | grep 4 && echo "success" || echo "fail"
+./bitcount -3 | grep 31 && echo "success" || echo "fail"
