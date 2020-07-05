@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+./invert 1111 0 2 | grep 1100 && echo "success" || echo "fail"; echo "1111 0 2"
+./invert 1111 1 2 | grep 1001 && echo "success" || echo "fail"; echo "1111 1 2"
+./invert 1111 2 2 | grep 11 && echo "success" || echo "fail"; echo "1111 2 2"
+./invert 0101 0 2 | grep 110 && echo "success" || echo "fail"; echo "0101 0 2"
+./invert 0101 1 2 | grep 11 && echo "success" || echo "fail"; echo "0101 1 2"
+./invert 0101 2 2 | grep 1001 && echo "success" || echo "fail"; echo "0101 2 2"
