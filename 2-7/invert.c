@@ -6,6 +6,13 @@
 // begin at position p inverted (i.e., 1 changed into 0 and vice versa),
 // leaving the others unchanged.
 
+// n = 2; p = 2
+//                   ~0 -> 11111111
+//              ~0 << n -> 11111100
+//         (~(~0 << n)) -> 00000011
+//   (~(~0 << n )) << p -> 00001100
+// ~((~(~0 << n)) << p) -> 11110011
+
 char* itoa(int val, int base){
   
   static char buf[32] = {0};
