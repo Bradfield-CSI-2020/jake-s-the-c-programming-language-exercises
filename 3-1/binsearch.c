@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <stdlib.h>
 // Our binary search makes two tests inside the loop, when one would suffice (at the price of more tests outside.)
 // Write a version with only one test inside the loop and measure the difference in runtime.
 
@@ -21,6 +23,14 @@ int binsearch(int x, int v[], int n) {
   return -1; /* no match */
 }
 
+
+// ./binsearch target el0 el1 el2 el3 ... elN
 int main(int argc, char *argv[]) {
+  int numsc = argc-2;
+  int numsv[numsc];
+  for(int i = 2; i < argc; i++) {
+    numsv[i-2] = atoi(argv[i]);
+  }
+  printf("%d\n", binsearch(atoi(argv[1]), numsv, numsc));
   return 0;
 }
