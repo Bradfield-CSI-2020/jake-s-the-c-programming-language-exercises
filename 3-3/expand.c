@@ -22,6 +22,8 @@ char bothAreAlphaAndNotLower(char c1, char c2) {
 }
 
 void expand(char s1[], char s2[]) {
+  // TODO: handle start > end
+  // TODO: handle start == end
   int s1len = strlen(s1);
   int i, j;
   int count = 0;
