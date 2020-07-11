@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 // Our binary search makes two tests inside the loop, when one would suffice (at the price of more tests outside.)
 // Write a version with only one test inside the loop and measure the difference in runtime.
 
@@ -50,6 +51,18 @@ int main(int argc, char *argv[]) {
   for(int i = 2; i < argc; i++) {
     numsv[i-2] = atoi(argv[i]);
   }
-  printf("%d\n", binsearch2(atoi(argv[1]), numsv, numsc));
+  clock_t start = clock();
+  int result = binsearch(atoi(argv[1]), numsv, numsc);
+  clock_t end = clock();
+  double time_spent = (double)(end - start) / CLOCKS_PER_SEC;
+  printf("%f\n", time_spent);
+  start = clock();
+  int result2 = binsearch2(atoi(argv[1]), numsv, numsc);
+  end = clock();
+  time_spent = (double)(end - start) / CLOCKS_PER_SEC;
+  printf("%f\n", time_spent);
+
+
+
   return 0;
 }

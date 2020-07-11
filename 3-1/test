@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+./binsearch 9387 {1..19376}
