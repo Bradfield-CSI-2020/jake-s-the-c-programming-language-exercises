@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+function test {
+  echo ""
+  echo "test: $1 expected: $2"
+  ./strrindex "$1" "$2" | grep -e "$3" && echo "success" || echo "fail"
+}
+
+test "test" "t" "3"
+test "bbbbbbbbbb" "b" "9"
+test "test" "o" "-1"
+test "o" "o" "0"
