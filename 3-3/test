@@ -1,10 +1,18 @@
-./expand a-z | wc -c | grep 27 && echo "success" || echo "fail"
-./expand a-b-z | wc -c | grep 27 && echo "success" || echo "fail"
-./expand A-z | wc -c | grep 4 && echo "success" || echo "fail"
-./expand a-Z | wc -c | grep 4 && echo "success" || echo "fail"
-./expand 0-9 | wc -c | grep 11 && echo "success" || echo "fail"
-./expand 0-9- | wc -c | grep 12 && echo "success" || echo "fail"
-./expand a-b-z- | wc -c | grep 28 && echo "success" || echo "fail"
-./expand g-8 | wc -c | grep 4 && echo "success" || echo "fail"
-./expand 00--00-0- | wc -c | grep 10 && echo "success" || echo "fail"
-./expand m-j | wc -c | grep 4 && echo "success" || echo "fail"
+#!/usr/bin/env bash
+
+function testexpand {
+  echo ""
+  echo "test: $1 expected: $2"
+  ./expand "$1" | wc -c | grep "$2" && echo "success" || echo "fail"
+}
+
+testexpand "a-z" "27"
+testexpand "a-b-z" "27"
+testexpand "A-z" "4"
+testexpand "a-Z" "4"
+testexpand "0-9" "11"
+testexpand "0-9-" "12"
+testexpand "a-b-z-" "28"
+testexpand "g-8" "4"
+testexpand "00--00-0-" "10"
+testexpand "m-j" "4"
