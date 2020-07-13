@@ -21,6 +21,7 @@ double pop(void);
 
 int main(void) {
   int type;
+  double op1;
   double op2;
   char s[MAXOP];
 
@@ -45,6 +46,15 @@ int main(void) {
           push(pop() / op2);
         else
           printf("error: zero divisor\n");
+        break;
+      case '%':
+        op2 = pop();
+        op1 = pop();
+        if(((int)op2 == op2) && ((int)op1 == op1)) {
+          push((int)op1 % (int)op2);
+        } else {
+          printf("error: cannot modulus operation on double\n");
+        }
         break;
       case '\n':
         printf("\t%.8g\n", pop());
