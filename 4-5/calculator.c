@@ -3,28 +3,28 @@
   <math.h> in Appendex B, section 4.
 */
 
+#include <ctype.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#include <ctype.h>
+#include <string.h>
 
 #define MAXOP 100
 #define NUMBER '0'
-#define CLEAR 'c'
-#define DUPLICATE 'd'
-#define SWAP 's'
-#define PRINT 'p'
+#define CLEAR '1'
+#define DUPLICATE '2'
+#define SWAP '3'
+#define PRINT '4'
+#define SINE '5'
+#define COSINE '6'
+#define TANGENT '7'
 #define PLUS '+'
 #define MINUS '-'
 #define DIVIDE '/'
 #define MULTIPLY '*'
 #define MODULO '%'
-#define NEWLINE '\n'
-#define SINE 'sin'
-#define COSINE 'cos'
-#define TANGENT 'tan'
 #define EXPONENT '^'
-#define POWER 'pow'
+#define NEWLINE '\n'
 
 #define MAXVAL 100
 
@@ -88,11 +88,18 @@ int main(void) {
         }
         break;
       case SINE:
+        push(sin(pop()));
+        break;
       case COSINE:
+        push(cos(pop()));
+        break;
       case TANGENT:
-      case POWER:
+        push(tan(pop()));
+        break;
       case EXPONENT:
-        printf("error: not implemented\n");
+        op2 = pop();
+        push(pow(pop(), op2));
+        break;
       case NEWLINE:
         // printf("\t%.8g\n", pop());
         break;
@@ -148,17 +155,34 @@ void clear(void) {
 int getch(void);
 void ungetch(int);
 
+char strequal(char s[], char s2[]) {
+  return strncmp(s, s2, MAXOP) == 0 ? 1 : 0;
+}
+
 int getop(char s[]) {
-  int i, c;
+  int i = 0, c;
 
   while((s[0] = c = getch()) == ' ' || c == '\t')
     ;
   s[1] = '\0';
+  if(isalpha(c)) {
+    while (isalpha(s[++i] = c = getch()))
+      ;
+    s[i] = '\0';
+    if (c != EOF)
+      ungetch(c);
+    if(strequal(s, "sin")) return SINE;
+    if(strequal(s, "cos")) return COSINE;
+    if(strequal(s, "tan")) return TANGENT;
+    if(strequal(s, "pow")) return EXPONENT;
+    if(strequal(s, "print")) return PRINT;
+    if(strequal(s, "swap")) return SWAP;
+    if(strequal(s, "duplicate")) return DUPLICATE;
+    if(strequal(s, "clear")) return CLEAR;
+  }
   if (!isdigit(c) && c != '.' && c != '-')
     return c;
-  i = 0;
   if(c == '-') {
-    s[i] = c;
     if(!isdigit(s[++i] = c = getch())) {
       ungetch(c);
       return '-';
