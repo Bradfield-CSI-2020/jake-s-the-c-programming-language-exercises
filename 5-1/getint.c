@@ -24,10 +24,13 @@ int getint(int *pn) {
   if (c == '+' || c == '-') {
     c = getch();
   }
-  for (*pn = 0; isdigit(c); c = getch()) {
-    *pn = 10 * *pn + (c - '0');
+  printf("%d\n", c);
+  if(isdigit(c)) {
+    for (*pn = 0; isdigit(c); c = getch()) {
+      *pn = 10 * *pn + (c - '0');
+    }
+    *pn *= sign;
   }
-  *pn *= sign;
   if (c != EOF) {
     ungetch(c);
   }
