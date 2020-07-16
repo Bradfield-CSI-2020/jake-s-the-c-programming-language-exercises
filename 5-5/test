@@ -1,8 +1,17 @@
 #!/usr/bin/env bash
 
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
 function testStrncpy () {
   echo "$1 $2: $3"
-  ./strncpy "$1" "$2" | grep "$3" && echo "Success" || echo "Fail"
+  ./strncpy "$1" "$2" | grep "$3" && echo -e "${GREEN}Success${NC}" || echo -e "${RED}Fail${NC}"
+}
+
+function testStrncat () {
+  echo "$1 $2 $3: $4"
+  ./strncat "$1" "$2" "$3" | grep "$4" && echo -e "${GREEN}Success${NC}" || echo -e "${RED}Fail${NC}"
 }
 
 testStrncpy fifty 3 fif
@@ -10,3 +19,15 @@ testStrncpy fifty 30 fifty
 testStrncpy fifty 0 ""
 testStrncpy "" 10 ""
 testStrncpy "" 0 "" 
+
+testStrncat hello world 0 hello
+testStrncat hello world 3 hellowor
+testStrncat hello world 5 helloworld
+testStrncat hello world 7 helloworld
+testStrncat "" world 0 ""
+testStrncat "" "" 0 ""
+testStrncat "" world 3 wor
+testStrncat "" world 7 world
+testStrncat hello "" 0 hello
+testStrncat hello "" 5 hello
+
