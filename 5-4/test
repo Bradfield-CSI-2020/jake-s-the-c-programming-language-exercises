@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+function test() {
+  echo "$1 $2 $3"
+  ./strend "$1" "$2" | grep "$3" && echo "success" || echo "fail"
+}
+
+test test st 1
+test test test 1
+test test set 0
+test test teste 0
+test " " "" 1
