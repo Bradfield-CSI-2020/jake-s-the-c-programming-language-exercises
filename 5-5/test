@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+function testStrncpy () {
+  echo "$1 $2: $3"
+  ./strncpy "$1" "$2" | grep "$3" && echo "Success" || echo "Fail"
+}
+
+testStrncpy fifty 3 fif
+testStrncpy fifty 30 fifty
+testStrncpy fifty 0 ""
+testStrncpy "" 10 ""
+testStrncpy "" 0 "" 
