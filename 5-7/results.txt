@@ -1,0 +1,5 @@
+ After running readlines and readlines2 100000 times
+
+0.000590565 readlines
+0.000657502 readlines2
+

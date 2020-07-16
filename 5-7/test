@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+echo "" > readlineslog.txt
+echo "" > readlines2log.txt
+
+for I in {0..100000}
+do
+  ./readlines < loremipsum.txt | tail -n 1 >> readlineslog.txt
+  ./readlines2 < loremipsum.txt | tail -n 1 >> readlines2log.txt
+done
+
+awk '{ total += $(($2 * 1.0)); count++ } END { print total/count }' readlineslog.txt 
+
+awk '{ total += $(($2 * 1.0)); count++ } END { print total/count }' readlines2log.txt 
