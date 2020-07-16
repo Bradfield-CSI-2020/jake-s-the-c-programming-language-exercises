@@ -12,15 +12,15 @@
 
 char *lineptr[MAXLINES];
 
-int readlines(char *lineptr[], int nlines);
+int readlines2(char storage[], char *lineptr[], int nlines);
 void writelines(char *lineptr[], int nlines);
 
 int main() {
   printf("Write lines, then ctrl + d to print\n");
   int nlines;
-
+  char storage[100000];
   clock_t start = clock();
-  if ((nlines = readlines(lineptr, MAXLINES)) >= 0) {
+  if ((nlines = readlines2(storage, lineptr, MAXLINES)) >= 0) {
     writelines(lineptr, nlines);
     clock_t end = clock();
     double time_spent = (double)(end - start) / CLOCKS_PER_SEC;
@@ -34,21 +34,21 @@ int main() {
 
 #define MAXLEN 1000
 int myGetline(char *, int);
-char *alloc(int);
 
-int readlines(char *lineptr[], int maxlines) {
+int readlines2(char storage[], char *lineptr[], int maxlines) {
   int len, nlines;
-  char *p, line[MAXLEN];
+  char *p = storage, line[MAXLEN];
 
   nlines = 0;
   while((len = myGetline(line, MAXLEN)) > 0) {
-    if (nlines >= maxlines || (p = alloc(len)) == NULL) {
+    if (nlines >= maxlines) {
       return -1;
     } else {
       line[len-1] = 0;
       strcpy(p, line);
       lineptr[nlines++] = p;
     }
+    p += len;
   }
   return nlines;
 }
@@ -71,25 +71,3 @@ int myGetline(char *s, int lim) {
   s[i] = '\0';
   return i;
 }
-
-#define ALLOCSIZE 100000
-static char allocbuf[ALLOCSIZE];
-static char *allocp = allocbuf;
-
-// return pointer to n characters
-// return 0 if not able
-char *alloc(int n) {
-  if (allocbuf + ALLOCSIZE - allocp >= n) {
-    /*  pointer arithmetic
-        allocbuf + ALLOCSIZE = allocbuf[ALLOCSIZE]
-          Adding pointer + integer results in a pointer offset by integer.
-        (allocbuf + ALLOCSIZE) - allocp = number of elements from the max to current pointer (integer)
-          Subtracting a pointer - pointer results in an integer, if they are in the same array.
-    */
-    allocp += n;
-    return allocp - n;
-  } else {
-    return 0;
-  }
-}
-
