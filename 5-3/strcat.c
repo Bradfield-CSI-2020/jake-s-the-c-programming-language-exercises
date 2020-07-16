@@ -6,6 +6,10 @@
 #include <stdio.h>
 
 void strcat(char *s, char *t) {
+  /* how big is 's'? How can we know what has been allocated?
+  How can we know that copying 't' past the 0 character won't
+  overwrite something that some other part of the program is using?
+  */
   for(; *s != 0; s++)
     ;
   for(; *t != 0; t++, s++) {
