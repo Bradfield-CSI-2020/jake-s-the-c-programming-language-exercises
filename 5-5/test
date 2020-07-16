@@ -14,12 +14,19 @@ function testStrncat () {
   ./strncat "$1" "$2" "$3" | grep "$4" && echo -e "${GREEN}Success${NC}" || echo -e "${RED}Fail${NC}"
 }
 
+function testStrncmp () {
+  echo "$1 $2 $3: $4"
+  ./strncmp "$1" "$2" "$3" | grep "$4" && echo -e "${GREEN}Success${NC}" || echo -e "${RED}Fail${NC}"
+}
+
+echo "strncpy"
 testStrncpy fifty 3 fif
 testStrncpy fifty 30 fifty
 testStrncpy fifty 0 ""
 testStrncpy "" 10 ""
 testStrncpy "" 0 "" 
 
+echo "strncat"
 testStrncat hello world 0 hello
 testStrncat hello world 3 hellowor
 testStrncat hello world 5 helloworld
@@ -31,3 +38,9 @@ testStrncat "" world 7 world
 testStrncat hello "" 0 hello
 testStrncat hello "" 5 hello
 
+
+echo "strncmp"
+testStrncmp "" "" 5 0
+testStrncmp "fe" "fi" 1 0
+testStrncmp "fe" "fi" 2 4
+testStrncmp "fifty" "fifty" 5 0
