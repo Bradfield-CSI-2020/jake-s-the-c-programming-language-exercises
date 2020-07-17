@@ -9,6 +9,7 @@
 #include <time.h>
 
 #define MAXLINES 50000
+#define MAXSTORAGE 100000
 
 char *lineptr[MAXLINES];
 
@@ -18,7 +19,7 @@ void writelines(char *lineptr[], int nlines);
 int main() {
   printf("Write lines, then ctrl + d to print\n");
   int nlines;
-  char storage[100000];
+  char storage[MAXSTORAGE];
   clock_t start = clock();
   if ((nlines = readlines2(storage, lineptr, MAXLINES)) >= 0) {
     writelines(lineptr, nlines);
@@ -37,18 +38,16 @@ int myGetline(char *, int);
 
 int readlines2(char storage[], char *lineptr[], int maxlines) {
   int len, nlines;
-  char *p = storage, line[MAXLEN];
+  char *maxstorage = storage + MAXSTORAGE - MAXLEN;
 
   nlines = 0;
-  while((len = myGetline(line, MAXLEN)) > 0) {
-    if (nlines >= maxlines) {
+  while((len = myGetline(storage, MAXLEN)) > 0) {
+    lineptr[nlines++] = storage;
+    storage[len-1] = 0;
+    storage += len;
+    if (nlines >= maxlines || storage > maxstorage) {
       return -1;
-    } else {
-      line[len-1] = 0;
-      strcpy(p, line);
-      lineptr[nlines++] = p;
     }
-    p += len;
   }
   return nlines;
 }
