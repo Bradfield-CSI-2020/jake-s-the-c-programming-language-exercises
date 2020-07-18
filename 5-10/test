@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+function test () {
+  # "${@:0:$#}" -- All but last element
+  # "${@:$#}" -- Only last element
+  echo "${@:0:$#}"
+  ./expr "${@:0:$#}" | grep -e "${@:$#}" && echo -e "${GREEN}Success${NC}" || (echo -e "${RED}Fail${NC}" && exit 1)
+}
+
+test 1 1 + 2
+test 1 1 - 0
+test 6 2 / 3 
+test 6 2 "*" 12
+test 1 1 + 1 1 + + 4
