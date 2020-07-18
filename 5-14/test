@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+function test () {
+  # "${@:0:$#}" -- All but last element
+  # "${@:$#}" -- Only last element
+  echo "" "${@}"
+  ./sort "${@}" < input.txt
+}
+
+test ""
+# Expect "10\n100\n11"
+test "-n"
+# Expect "10\n11\n100"
+test "-r"
+# Expect "11\n100\n10"
+test "-n" "-r"
+# Expect "100\n11\n10"
+test "blah"
+# Expect "10\n100\n11"

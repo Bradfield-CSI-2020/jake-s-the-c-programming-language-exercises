@@ -19,15 +19,54 @@ void myQsort(void *lineptr[], int left, int right,
 
 int numcmp(char *, char *);
 
+int reversenumcmp(char * c1, char * c2) {
+  int res = numcmp(c1, c2);
+  if(res > 0) return -1;
+  if(res < 0) return 1;
+  return 0;
+}
+
+int reversestrcmp(char * c1, char * c2) {
+  int res = strcmp(c1, c2);
+  if(res > 0) return -1;
+  if(res < 0) return 1;
+  return 0;
+}
+
 /* sort input lines */
 int main(int argc, char * argv[]) {
   int nlines;                               /* number of input lines read */
   int numeric = 0;                          /* 1 if numeric sort */
+  int reverse = 0;                          /* 2 if reverse sort */
+  int (*sortfn)(void *, void *);
 
-  if (argc > 1 && strcmp(argv[1], "-n") == 0)
-    numeric = 1;
+  for(int i = 1; i < argc; i++) {
+    if(strcmp(argv[i], "-n") == 0) {
+      numeric = 1;
+    }
+    if(strcmp(argv[i], "-r") == 0) {
+      reverse = 2;
+    }
+  }
+
+  switch(numeric + reverse) {
+    case 3: /* both flags on */
+      sortfn = (int (*)(void *, void *))reversenumcmp;
+    break;
+    case 2: /* reverse only */
+      sortfn = (int (*)(void *, void *))reversestrcmp;
+    break;
+    case 1: /* numeric only */
+      sortfn = (int (*)(void *, void *))numcmp;
+    break;
+    case 0: /* neither */
+    default:
+      sortfn = (int (*)(void *, void *))strcmp;
+    break;
+  }
+
   if ((nlines = readlines(lineptr, MAXLINES)) >= 0) {
-    myQsort((void **) lineptr, 0, nlines-1, (int (*)(void *, void *))(numeric ? numcmp : strcmp));
+    myQsort((void **) lineptr, 0, nlines-1, sortfn);
     writelines(lineptr, nlines);
     return 0;
   } else {
