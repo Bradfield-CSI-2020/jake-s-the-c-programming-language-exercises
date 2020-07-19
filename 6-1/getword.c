@@ -1,6 +1,8 @@
 /*  Exercise 6-1
     Our version of getword does not properly handle underscores, string constants,
     comments, or preprocessor control lines. Write a better version.
+
+    *NOT DONE*
 */
 
 #include <stdio.h>
@@ -71,7 +73,6 @@ int main(void) {
       }
     }
   }
-
 
   for(pkey = keytab; pkey - keytab < NKEYS; pkey++) {
     printf("%s: %d\n", pkey->word, pkey->count);
