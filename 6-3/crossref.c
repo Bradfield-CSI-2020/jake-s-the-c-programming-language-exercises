@@ -8,6 +8,32 @@
 
 #define MAXWORDLEN 100
 
+// storage mechanism
+// binary tree for individual words
+// linked list for line numbers?
+  // This might be easiest to implement
+  // Might get inefficient for words that appear very often
+  // Is there a way we can make sure the latest entry is always the head?
+    // If we do that, we only have to traverse one element into the list to add.
+// "dynamic" array for line numbers?
+  // e.g. set array at some size N
+  // when array is almost full, resize it by creating a new array at double the length
+  // and then moving everything over.
+  // Since we will only ever be adding things to the array, we don't really need to worry
+  // about resizing in the other direction.
+
+struct linkedlist {
+  int linenumber;
+  struct linkedlist * next;
+}
+
+struct treenode {
+  char *word;
+  struct treenode * left;   /* left nodes contain words that are "less" than the word */
+  struct treenode * right;  /* right nodes contain words that are "more" than the word */
+  struct linkedlist * linenumbers;
+};
+
 int main(void) {
   char wordbuffer[MAXWORDLEN];
   char *pword = wordbuffer;
