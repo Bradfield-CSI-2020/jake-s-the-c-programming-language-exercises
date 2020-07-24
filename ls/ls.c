@@ -114,7 +114,7 @@ void ls(char * path) {
 
     nameliststart = namelist;
     while (numdir > 0) {
-      if (stat(((*namelist)->d_name), &statbuffer) == 1) {
+      if (stat((*namelist)->d_name, &statbuffer) == 1) {
         printf("Couldn't run stat on known file %s\n", (*namelist)->d_name);
         exit(1);
       }
@@ -126,7 +126,7 @@ void ls(char * path) {
         grp = getgrgid(statbuffer.st_gid);
         if(grp == NULL) perror("getgrgid");
 
-        printf("%c%c%c%c%c%c%c%c%c%c %3jd %s %6s %6jd %s %s\n",
+        printf("%c%c%c%c%c%c%c%c%c%c %3jd %s %6s %6jd %s %s %d\n",
           '-',
           (statbuffer.st_mode & S_IRUSR) == S_IRUSR ? 'r' : '-',
           (statbuffer.st_mode & S_IWUSR) == S_IWUSR ? 'w' : '-',
@@ -142,7 +142,8 @@ void ls(char * path) {
           grp->gr_name,
           (intmax_t)statbuffer.st_size,
           timebuffer,
-          (*namelist)->d_name
+          (*namelist)->d_name,
+          (*namelist)->d_ino == statbuffer.st_ino
         );
       } else {
         printf("%s\n", (*namelist)->d_name);
