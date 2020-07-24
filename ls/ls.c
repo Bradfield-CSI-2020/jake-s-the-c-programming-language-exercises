@@ -9,9 +9,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <time.h>
 
 
 #define PATH_LEN 100
+#define TIME_STR_LEN 13
 
 void ls(char *);
 int alphasort(const struct dirent **d1, const struct dirent **d2);
@@ -85,6 +87,9 @@ void ls(char * path) {
   struct stat statbuffer;
   struct dirent ** namelist;
   struct dirent ** nameliststart;
+  struct tm datetime;
+  char * timefmt = "%b %d %H:%M";
+  char timebuffer[TIME_STR_LEN];
 
   // load stat into statbuffer
   if(stat(path, &statbuffer) == -1) {
@@ -100,9 +105,36 @@ void ls(char * path) {
       printf("Something went very wrong\n");
       exit(1);
     }
+
     nameliststart = namelist;
     while (numdir > 0) {
-      printf("%s\n", (*namelist)->d_name);
+      if (stat((*namelist)->d_name, &statbuffer) == 1) {
+        printf("Couldn't run stat on known file %s\n", (*namelist)->d_name);
+        exit(1);
+      }
+      if(flags.list_long) {
+        if(!localtime_r(&(statbuffer.st_mtime), &datetime)) perror("localtime_r failed.\n");
+        if(!strftime(timebuffer, TIME_STR_LEN, timefmt, &datetime)) perror("strftime failed.\n");
+        printf("%c%c%c%c%c%c%c%c%c%c %jd %jd %6jd %s %s\n",
+          '-',
+          (statbuffer.st_mode & S_IRUSR) == S_IRUSR ? 'r' : '-',
+          (statbuffer.st_mode & S_IWUSR) == S_IWUSR ? 'w' : '-',
+          (statbuffer.st_mode & S_IXUSR) == S_IXUSR ? 'x' : '-',
+          (statbuffer.st_mode & S_IRGRP) == S_IRGRP ? 'r' : '-',
+          (statbuffer.st_mode & S_IWGRP) == S_IWGRP ? 'w' : '-',
+          (statbuffer.st_mode & S_IXGRP) == S_IXGRP ? 'x' : '-',
+          (statbuffer.st_mode & S_IROTH) == S_IROTH ? 'r' : '-',
+          (statbuffer.st_mode & S_IWOTH) == S_IWOTH ? 'w' : '-',
+          (statbuffer.st_mode & S_IXOTH) == S_IXOTH ? 'x' : '-',
+          (intmax_t)statbuffer.st_uid,
+          (intmax_t)statbuffer.st_gid,
+          (intmax_t)statbuffer.st_size,
+          timebuffer,
+          (*namelist)->d_name
+        );
+      } else {
+        printf("%s\n", (*namelist)->d_name);
+      }
       free(*namelist);
       namelist++;
       numdir--;
