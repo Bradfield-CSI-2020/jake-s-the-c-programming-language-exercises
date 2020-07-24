@@ -84,6 +84,7 @@ void ls(char * path) {
   struct dirent * directoryEntity;
   struct stat statbuffer;
   struct dirent ** namelist;
+  struct dirent ** nameliststart;
 
   // load stat into statbuffer
   if(stat(path, &statbuffer) == -1) {
@@ -95,11 +96,14 @@ void ls(char * path) {
     // directoryPointer = opendir(path);
     // if (directoryPointer == NULL) exit(1);
     numdir = scandir(path, &namelist, select, alphasort);
+    nameliststart = namelist;
     while (numdir > 0) {
       printf("%s\n", (*namelist)->d_name);
+      free(*namelist);
       namelist++;
       numdir--;
     }
+    free(nameliststart);
   } else {
     printf("%s\n", path);
   }
