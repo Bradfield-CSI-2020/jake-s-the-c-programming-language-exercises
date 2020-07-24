@@ -92,7 +92,13 @@ int handleFlags(char * arg) {
   return 0;
 }
 
+static int hereFileDescriptor;
+
 int main(int argc, char * argv[]) {
+  DIR * here;
+  here = opendir(".");
+  hereFileDescriptor = dirfd(here);
+
   if (argc == 1) {
     ls(".");
   } else if (argc == 2) {
@@ -116,6 +122,8 @@ int main(int argc, char * argv[]) {
       argc--;
     }
   }
+
+  closedir(here);
   exit(0);
 }
 
@@ -123,12 +131,18 @@ void ls(char * path) {
   int numdir;
   DIR * directoryPointer;
   struct dirent * directoryEntity;
+
+  char relpath[PATH_LEN];
+
   struct stat statbuffer;
+
   struct dirent ** namelist;
   struct dirent ** nameliststart;
+
   struct tm datetime;
   char * timefmt = "%b %d %H:%M";
   char timebuffer[TIME_STR_LEN];
+
   struct passwd *pwd;
   struct group *grp;
 
@@ -147,8 +161,13 @@ void ls(char * path) {
 
     nameliststart = namelist;
     while (numdir > 0) {
-      if (stat((*namelist)->d_name, &statbuffer) == 1) {
-        printf("Couldn't run stat on known file %s\n", (*namelist)->d_name);
+      /* create a relative path to each file */
+      strcpy(relpath, path);
+      strcat(relpath, "/");
+      strcat(relpath, (*namelist)->d_name);
+
+      if (fstatat(hereFileDescriptor, relpath, &statbuffer, 0) == 1) {
+        printf("Couldn't run stat on known file %s\n", relpath);
         exit(1);
       }
       if(flags.list_long) {
