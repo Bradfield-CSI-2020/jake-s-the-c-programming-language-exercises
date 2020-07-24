@@ -96,6 +96,10 @@ void ls(char * path) {
     // directoryPointer = opendir(path);
     // if (directoryPointer == NULL) exit(1);
     numdir = scandir(path, &namelist, select, alphasort);
+    if(numdir == -1) {
+      printf("Something went very wrong\n");
+      exit(1);
+    }
     nameliststart = namelist;
     while (numdir > 0) {
       printf("%s\n", (*namelist)->d_name);
