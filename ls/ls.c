@@ -20,8 +20,16 @@ int select(const struct dirent *);
 int main(int argc, char * argv[]) {
   if (argc == 1) {
     ls(".");
-  } else {
+  } else if (argc == 2) {
     ls(argv[1]);
+  } else {
+    argv++;
+    while(argc > 1) {
+      printf("%s:\n", *argv);
+      ls(*argv);
+      argv++;
+      argc--;
+    }
   }
   exit(0);
 }
@@ -34,7 +42,10 @@ void ls(char * path) {
   struct dirent ** namelist;
 
   // load stat into statbuffer
-  stat(path, &statbuffer);
+  if(stat(path, &statbuffer) == -1) {
+    printf("ls: %s: No such file or directory\n", path);
+    exit(1);
+  }
   if ((statbuffer.st_mode & S_IFMT) == S_IFDIR) {
     // true if file is a directory
     // directoryPointer = opendir(path);
@@ -45,11 +56,9 @@ void ls(char * path) {
       namelist++;
       numdir--;
     }
-
-  } else {    
+  } else {
     printf("%s\n", path);
   }
-
 }
 
 int select(const struct dirent * d) {
