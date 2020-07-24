@@ -17,16 +17,60 @@ void ls(char *);
 int alphasort(const struct dirent **d1, const struct dirent **d2);
 int select(const struct dirent *);
 
+int cmpstr(const void * a, const void * b) {
+  return strcmp(* (const char **) a, * (const char **) b);
+}
+
+/* p. 149-150 K&R */
+struct {
+  unsigned int include_dot : 1;
+  unsigned int list_long : 1;
+  unsigned int multi_column : 1;
+  unsigned int slash_after_if_dir : 1;
+} flags;
+
+int handleFlags(char * arg) {
+  if(arg[0] == '-') {
+    // it's a flag
+    switch(arg[1]) {
+      case 'a':
+        flags.include_dot = 1;
+      break;
+      case 'l':
+        flags.list_long = 1;
+      break;
+      case 'C':
+        flags.multi_column = 1;
+      break;
+      case 'p':
+        flags.slash_after_if_dir = 1;
+      break;
+    }
+    return 1;
+  }
+  return 0;
+}
+
 int main(int argc, char * argv[]) {
   if (argc == 1) {
     ls(".");
   } else if (argc == 2) {
-    ls(argv[1]);
+    if(handleFlags(argv[1])) {
+      // the arg was a flag
+      ls(".");
+    } else {
+      // the arg was an arg
+      ls(argv[1]);
+    }
   } else {
     argv++;
+    qsort(argv, argc-1, sizeof(char *), cmpstr);
     while(argc > 1) {
-      printf("%s:\n", *argv);
-      ls(*argv);
+      if(!handleFlags(*argv)) {
+        // it's an arg
+        printf("%s:\n", *argv);
+        ls(*argv);
+      }
       argv++;
       argc--;
     }
@@ -44,7 +88,7 @@ void ls(char * path) {
   // load stat into statbuffer
   if(stat(path, &statbuffer) == -1) {
     printf("ls: %s: No such file or directory\n", path);
-    exit(1);
+    return;
   }
   if ((statbuffer.st_mode & S_IFMT) == S_IFDIR) {
     // true if file is a directory
@@ -62,7 +106,7 @@ void ls(char * path) {
 }
 
 int select(const struct dirent * d) {
-  if(d->d_name[0] == '.') return 0;
+  if(d->d_name[0] == '.' && !flags.include_dot) return 0;
   return 1;
 }
 
