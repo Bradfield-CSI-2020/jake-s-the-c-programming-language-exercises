@@ -178,7 +178,7 @@ void ls(char * path) {
         grp = getgrgid(statbuffer.st_gid);
         if(grp == NULL) perror("getgrgid");
 
-        printf("%c%c%c%c%c%c%c%c%c%c %3jd %s %6s %6jd %s %s %d\n",
+        printf("%c%c%c%c%c%c%c%c%c%c %3jd %s %6s %6jd %s %s\n",
           '-',
           (statbuffer.st_mode & S_IRUSR) == S_IRUSR ? 'r' : '-',
           (statbuffer.st_mode & S_IWUSR) == S_IWUSR ? 'w' : '-',
@@ -194,8 +194,7 @@ void ls(char * path) {
           grp->gr_name,
           (intmax_t)statbuffer.st_size,
           timebuffer,
-          (*namelist)->d_name,
-          (*namelist)->d_ino == statbuffer.st_ino
+          (*namelist)->d_name
         );
       } else {
         printf("%s\n", (*namelist)->d_name);
