@@ -5,14 +5,47 @@
 */
 
 #include <dirent.h>
+/*
+  struct dirent
+  DIR *
+  opendir()
+  dirfd()
+  scandir()
+*/
+#include <fcntl.h>
+/*
+  the constant
+  AT_SYMLINK_NOFOLLOW
+  used for the final argument of 'fstatat'
+*/
 #include <grp.h>
+/*
+  This, plus sys/types.h are required for:
+  struct group
+  getgrgid()
+*/
 #include <pwd.h>
+/*
+  This, plus sys/types.h, plus uuid/uuid.h are required for:
+  struct passwd
+  getpwuid()
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+/*
+  struct stat
+  stat()
+  fstatat()
+*/
 #include <sys/types.h>
 #include <time.h>
+/*
+  struct tm
+  localtime_r()
+  strftime()
+*/
 #include <uuid/uuid.h>
 
 
@@ -46,9 +79,11 @@ int handleFlags(char * arg) {
         flags.list_long = 1;
       break;
       case 'C':
+      // not implemented
         flags.multi_column = 1;
       break;
       case 'p':
+      // not implemented
         flags.slash_after_if_dir = 1;
       break;
     }
@@ -104,8 +139,6 @@ void ls(char * path) {
   }
   if ((statbuffer.st_mode & S_IFMT) == S_IFDIR) {
     // true if file is a directory
-    // directoryPointer = opendir(path);
-    // if (directoryPointer == NULL) exit(1);
     numdir = scandir(path, &namelist, select, alphasort);
     if(numdir == -1) {
       printf("Something went very wrong\n");
@@ -162,28 +195,3 @@ int select(const struct dirent * d) {
   if(d->d_name[0] == '.' && !flags.include_dot) return 0;
   return 1;
 }
-
-/*
-  DIR * directoryPointer;
-  FILE * filePointer;
-  struct dirent * directoryEntity;
-  struct stat currentStat;
-  char pathspace[PATH_LEN];
-  char * path = pathspace;
-
-  directoryPointer = opendir(".");
-  stat(path, &currentStat);
-
-  if (directoryPointer == NULL) {
-    printf("fuck\n");
-    exit(1);
-  } else {
-    while((directoryEntity = readdir(directoryPointer)) != NULL) {
-      printf("%s\n", directoryEntity->d_name);
-      sprintf(path, "./%s", directoryEntity->d_name);
-
-      printf("%s\n", ((currentStat.st_mode & S_IFMT) == S_IFDIR) ? "directory" : "file");
-    }
-  }
-
-*/
